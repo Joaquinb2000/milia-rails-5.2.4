@@ -45,7 +45,7 @@ module Milia
            gem 'airbrake'
          end
 
-         gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
+         gem 'activerecord-session_store', '~> 1.1.3'
 
          run_bundle
       end
@@ -209,7 +209,7 @@ private
 # *************************************************************
  def snippet_db_migrate_user
     <<-'RUBY1'
-    
+
       # milia member_invitable
       t.boolean    :skip_confirm_change_password, :default => false
       t.references :tenant
@@ -225,7 +225,7 @@ private
  def snippet_app_ctlr_header
     <<-'RUBY3'
   before_action :authenticate_tenant!
-  
+
      ##    milia defines a default max_tenants, invalid_tenant exception handling
      ##    but you can override these if you wish to handle directly
   rescue_from ::Milia::Control::MaxTenantExceeded, :with => :max_tenants
@@ -243,17 +243,17 @@ private
 
  def snippet_routes_devise
 <<-'RUBY5'
-  
+
   # *MUST* come *BEFORE* devise's definitions (below)
-  as :user do   
+  as :user do
     match '/user/confirmation' => 'milia/confirmations#update', :via => :put, :as => :update_user_confirmation
   end
 
-  devise_for :users, :controllers => { 
+  devise_for :users, :controllers => {
     :registrations => "milia/registrations",
     :confirmations => "milia/confirmations",
-    :sessions => "milia/sessions", 
-    :passwords => "milia/passwords", 
+    :sessions => "milia/sessions",
+    :passwords => "milia/passwords",
   }
 
 RUBY5
@@ -278,9 +278,9 @@ RUBY6
 
       if new_signups_not_permitted?(coupon_params)
 
-        raise ::Milia::Control::MaxTenantExceeded, "Sorry, new accounts not permitted at this time" 
+        raise ::Milia::Control::MaxTenantExceeded, "Sorry, new accounts not permitted at this time"
 
-      else 
+      else
         tenant.save    # create the tenant
       end
       return tenant
@@ -343,7 +343,7 @@ RUBY6
     end
 
     return new_member
-      
+
   end
 
     RUBY11
@@ -398,7 +398,7 @@ RUBY6
 
  def snippet_env_dev
 <<-RUBY20
- 
+
   # devise says to define default url
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
 
@@ -407,7 +407,7 @@ RUBY6
   config.action_mailer.raise_delivery_errors = false
 
   config.action_mailer.delivery_method = :smtp
-  
+
   ActionMailer::Base.smtp_settings = {
     :address => "smtp.gmail.com",
     :port => "587",
@@ -421,7 +421,7 @@ RUBY20
 
  def snippet_env_prod
 <<-'RUBY21'
- 
+
   # devise says to define default url
   config.action_mailer.default_url_options = { :host => 'secure.simple-milia-app.com', :protocol => 'https' }
 
@@ -441,7 +441,7 @@ RUBY21
 
  def snippet_env_test
 <<-'RUBY22'
- 
+
   # devise says to define default url
   config.action_mailer.default_url_options = { :host => "www.example.com" }
 RUBY22
@@ -450,7 +450,7 @@ RUBY22
 
  def snippet_config_application
 <<-'RUBY23'
- 
+
     # uncomment to ensure a common layout for devise forms
     #   config.to_prepare do   # Devise
     #     Devise::SessionsController.layout "sign"
